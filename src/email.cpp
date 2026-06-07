@@ -27,6 +27,7 @@
 
 #include "fastcgi++/email.hpp"
 #include "fastcgi++/log.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 
 #include <codecvt>
 #include <locale>
@@ -35,7 +36,7 @@
 template <>
 void Fastcgipp::Mail::Email<wchar_t>::to(const std::wstring& address)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         m_data.to = converter.to_bytes(address);
@@ -49,7 +50,7 @@ void Fastcgipp::Mail::Email<wchar_t>::to(const std::wstring& address)
 template <>
 void Fastcgipp::Mail::Email<wchar_t>::from(const std::wstring& address)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         m_data.from = converter.to_bytes(address);

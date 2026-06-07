@@ -27,6 +27,7 @@
 
 #include "fastcgi++/curl.hpp"
 #include "fastcgi++/log.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 
 #include <curl/curl.h>
 #include <codecvt>
@@ -126,7 +127,7 @@ void Fastcgipp::Curl_base::verifySSL(bool verify)
 
 void Fastcgipp::Curl_base::setUrl(const std::wstring& url)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         setUrl(converter.to_bytes(url));
@@ -145,7 +146,7 @@ void Fastcgipp::Curl_base::addHeader(const char* const header)
 
 void Fastcgipp::Curl_base::addHeader(const std::wstring& header)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         addHeader(converter.to_bytes(header));
@@ -404,7 +405,7 @@ void Fastcgipp::Curl_base::StreamBuf<wchar_t>::injectHeader(
         const char* valueStart,
         const char* valueEnd)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         std::wstring key = converter.from_bytes(keyStart, keyEnd);

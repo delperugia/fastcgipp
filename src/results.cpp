@@ -28,6 +28,7 @@
 
 #include "fastcgi++/sql/results.hpp"
 #include "fastcgi++/log.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 #include "sqlTraits.hpp"
 
 #include <locale>
@@ -125,7 +126,7 @@ template<> void Results_base::field<WTEXT>(
         int column,
         WTEXT& value) const
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     const char* const start = PQgetvalue(
             reinterpret_cast<const PGresult*>(m_res),
             row,
@@ -407,7 +408,7 @@ void Results_base::field<WTEXT>(
 
     value.clear();
     value.reserve(size);
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         for(int i=0; i<size; ++i)

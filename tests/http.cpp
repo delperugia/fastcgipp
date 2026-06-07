@@ -1,5 +1,6 @@
 #include "fastcgi++/log.hpp"
 #include "fastcgi++/http.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 
 #include <list>
 #include <array>
@@ -407,6 +408,43 @@ int main()
             FAIL_LOG("Fastcgipp::Http::percentEscapedToRealBytes()")
     }
 
+    // Test Fastcgipp::WstringConvert
+    {
+        static const std::vector<std::wstring> texts =
+        {
+            L"ASCII test 123",
+            L"проверка тест - 中文 - Français - Jürgen - σκύλος",
+            L"",
+            L"a",
+            L"Σὲ γνωρίζω ἀπὸ τὴν κόψη"
+             "τοῦ σπαθιοῦ τὴν τρομερή,"
+             "σὲ γνωρίζω ἀπὸ τὴν ὄψη"
+             "ποὺ μὲ βία μετράει τὴ γῆ."
+             "᾿Απ᾿ τὰ κόκκαλα βγαλμένη"
+             "τῶν ῾Ελλήνων τὰ ἱερά"
+             "καὶ σὰν πρῶτα ἀνδρειωμένη"
+             "χαῖρε, ὦ χαῖρε, ᾿Ελευθεριά!"
+        };
+        //
+        for (const std::wstring &src : texts)
+        {
+            Fastcgipp::WstringConvert converter;
+            auto s = converter.to_bytes(src);
+            auto ws = converter.from_bytes(s.c_str(), s.c_str() + s.length());
+            if (src != ws)
+                FAIL_LOG("Fastcgipp::WstringConvert from_bytes(ptr,ptr)");
+        }
+        //
+        for (const std::wstring &src : texts)
+        {
+            Fastcgipp::WstringConvert converter;
+            auto s = converter.to_bytes(src);
+            auto ws = converter.from_bytes(s);
+            if (src != ws)
+                FAIL_LOG("Fastcgipp::WstringConvert from_bytes(s)");
+        }
+    }
+
     // Testing Fastcgipp::Http::decodeUrlEncoded() #1
     {
         const char input[] =
@@ -528,7 +566,7 @@ int main()
             Fastcgipp::Http::Environment<wchar_t> environment;
             {
                 {
-                    const unsigned char parms[] = 
+                    const unsigned char parms[] =
 #include "multipartParam.hpp"
                     environment.fill(
                             reinterpret_cast<const char*>(parms),
@@ -583,7 +621,7 @@ int main()
 
                 // Checking posts
                 {
-                    static const unsigned char data[] = 
+                    static const unsigned char data[] =
 #include "multipartPost.hpp"
                     static const char* const dataStart =
                         reinterpret_cast<const char*>(data);
@@ -605,7 +643,7 @@ int main()
 
                 // Checking files
                 {
-                    static const unsigned char gnu_png[] = 
+                    static const unsigned char gnu_png[] =
 #include "gnu.png.hpp"
                     if(
                             environment.files.size() != 1 ||
@@ -633,7 +671,7 @@ int main()
             Fastcgipp::Http::Environment<wchar_t> environment;
             {
                 {
-                    static const unsigned char data[] = 
+                    static const unsigned char data[] =
 #include "urlencodedParam.hpp"
                     static const char* const dataStart =
                         reinterpret_cast<const char*>(data);
@@ -701,7 +739,7 @@ int main()
 
                 // Checking posts
                 {
-                    const unsigned char data[] = 
+                    const unsigned char data[] =
 #include "urlencodedPost.hpp"
                     static const char* const dataStart =
                         reinterpret_cast<const char*>(data);

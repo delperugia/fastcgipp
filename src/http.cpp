@@ -34,14 +34,14 @@
 
 #include "fastcgi++/log.hpp"
 #include "fastcgi++/http.hpp"
-
+#include "fastcgi++/wstringconvert.hpp"
 
 void Fastcgipp::Http::vecToString(
         const char* start,
         const char* end,
         std::wstring& string)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         string = converter.from_bytes(&*start, &*end);

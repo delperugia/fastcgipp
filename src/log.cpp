@@ -27,6 +27,7 @@
 *******************************************************************************/
 
 #include "fastcgi++/log.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 
 #include <iomanip>
 #include <iostream>
@@ -50,7 +51,7 @@ namespace Fastcgipp
         {
             char buffer[HOST_NAME_MAX+2];
             gethostname(buffer, sizeof(buffer));
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+            WstringConvert converter;
             try
             {
                 return(converter.from_bytes(
@@ -67,7 +68,7 @@ namespace Fastcgipp
 
         std::wstring getProgram()
         {
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+            WstringConvert converter;
             std::wostringstream ss;
             try
             {

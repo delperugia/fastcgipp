@@ -29,6 +29,7 @@
 #include "sqlTraits.hpp"
 #include "fastcgi++/sql/parameters.hpp"
 #include "fastcgi++/log.hpp"
+#include "fastcgi++/wstringconvert.hpp"
 
 #include <locale>
 #include <codecvt>
@@ -37,7 +38,7 @@ using namespace Fastcgipp::SQL;
 
 TEXT Parameter<WTEXT>::convert(const WTEXT& x)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         return converter.to_bytes(x);
@@ -174,7 +175,7 @@ ARRAY<TEXT> Parameter<ARRAY<WTEXT>>::convert(const ARRAY<WTEXT>& x)
     ARRAY<TEXT> result;
     result.reserve(x.size());
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         for(const auto& string: x)
@@ -189,7 +190,7 @@ ARRAY<TEXT> Parameter<ARRAY<WTEXT>>::convert(const ARRAY<WTEXT>& x)
 
 WTEXT Parameter<ARRAY<WTEXT>>::convert(const TEXT& x)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    WstringConvert converter;
     try
     {
         return converter.from_bytes(x);
